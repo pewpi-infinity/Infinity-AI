@@ -11,24 +11,24 @@ interface ChatWindowProps {
 
 const EXAMPLE_PROMPTS = [
   {
-    icon: '🧮',
-    title: 'Complex Math',
-    prompt: 'Prove that the sum of angles in a triangle equals 180°, then extend this to polygons.',
+    icon: '🚀',
+    title: 'Start Simple',
+    prompt: 'I want to launch a niche AI community. Ask me questions and iterate with me.',
   },
   {
-    icon: '💻',
-    title: 'Code Analysis',
-    prompt: 'Write a dynamic programming solution for the knapsack problem and explain the time complexity.',
+    icon: '🧩',
+    title: 'Build a Webpage',
+    prompt: 'Take this conversation and turn it into a full landing page with working sections and copy.',
   },
   {
-    icon: '🔬',
-    title: 'Data Analysis',
-    prompt: 'Explain how to detect anomalies in a time-series dataset using statistical methods.',
+    icon: '🪙',
+    title: 'Tokenize Outputs',
+    prompt: 'Tokenize each AI response and attach it to this conversation so I can track collectible value.',
   },
   {
-    icon: '🧠',
-    title: 'Multi-step Reasoning',
-    prompt: 'A company has revenue doubling each year. If it makes $10M today and expenses grow at 20%/yr starting at $3M, in which year does it become unprofitable?',
+    icon: '🏪',
+    title: 'Marketplace Strategy',
+    prompt: 'Suggest how to list rare tokens at a premium while keeping a $1 base floor for standard tokens.',
   },
 ];
 
@@ -48,16 +48,14 @@ export function ChatWindow({ messages, showReasoning, isLoading }: ChatWindowPro
             <Brain className="w-10 h-10 text-white" />
           </div>
           <h2 className="text-3xl font-bold text-white mb-3 tracking-tight">
-            Infinity Reasoning Engine
+            Infinity AI: Agentic + Personalized
           </h2>
           <p className="text-slate-400 text-base mb-2 leading-relaxed max-w-lg mx-auto">
-            Powered by{' '}
-            <span className="text-violet-400 font-medium">Claude 3.5 Sonnet</span> and{' '}
-            <span className="text-blue-400 font-medium">OpenAI o1</span> — high-intelligence
-            models that think step-by-step before answering.
+            Start with a conversation, iterate with the agent, then turn it into a working webpage.
+            Every assistant response can mint a unique token tied to your conversation assets.
           </p>
           <p className="text-slate-500 text-sm mb-10">
-            Complex logic · Multi-step reasoning · Code · Data analysis
+            Agentic execution (#5) · Personalization (#6) · Tokenized creation marketplace
           </p>
 
           {/* Example prompts */}

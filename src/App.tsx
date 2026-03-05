@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Settings, Key, X, PanelLeftClose, PanelLeft } from 'lucide-react';
+import { Settings, Key, X, PanelLeftClose, PanelLeft, Wallet, Gem } from 'lucide-react';
 import { Sidebar } from './components/Sidebar';
 import { ChatWindow } from './components/ChatWindow';
 import { ChatInput } from './components/ChatInput';
@@ -21,6 +21,9 @@ export default function App() {
     sendUserMessage,
     stopGeneration,
     clearMessages,
+    rewardTokens,
+    rewardTokenBalanceUsd,
+    rareTokenCount,
   } = useConversations(apiConfig);
 
   const [showSettings, setShowSettings] = useState(false);
@@ -66,6 +69,22 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-600/10 border border-emerald-500/30 text-xs">
+              <Wallet className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="text-emerald-300 font-medium">{rewardTokens.length} tokens</span>
+              <span className="text-emerald-500/80">·</span>
+              <span className="text-emerald-200">${rewardTokenBalanceUsd.toFixed(0)} base</span>
+              {rareTokenCount > 0 && (
+                <>
+                  <span className="text-emerald-500/80">·</span>
+                  <span className="inline-flex items-center gap-1 text-amber-300">
+                    <Gem className="w-3 h-3" />
+                    {rareTokenCount} rare
+                  </span>
+                </>
+              )}
+            </div>
+
             {/* API Config button */}
             {!apiConfig ? (
               <button

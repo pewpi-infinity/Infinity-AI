@@ -85,23 +85,31 @@ export function MessageBubble({ message, showReasoning }: MessageBubbleProps) {
 
         {/* Message bubble */}
         {(message.content || !message.isThinking) && (
-          <div
-            className={`rounded-2xl px-4 py-3 ${
-              isUser
-                ? 'bg-gradient-to-br from-violet-600 to-indigo-600 text-white text-sm rounded-tr-sm'
-                : message.error
-                ? 'bg-red-900/20 border border-red-500/20 text-red-300 text-sm rounded-tl-sm'
-                : 'bg-slate-800/80 border border-slate-700/50 rounded-tl-sm'
-            }`}
-          >
-            {isUser ? (
-              <p className="whitespace-pre-wrap text-sm leading-relaxed">
-                {message.content}
-              </p>
-            ) : (
-              <MarkdownRenderer content={message.content} />
+          <>
+            <div
+              className={`rounded-2xl px-4 py-3 ${
+                isUser
+                  ? 'bg-gradient-to-br from-violet-600 to-indigo-600 text-white text-sm rounded-tr-sm'
+                  : message.error
+                  ? 'bg-red-900/20 border border-red-500/20 text-red-300 text-sm rounded-tl-sm'
+                  : 'bg-slate-800/80 border border-slate-700/50 rounded-tl-sm'
+              }`}
+            >
+              {isUser ? (
+                <p className="whitespace-pre-wrap text-sm leading-relaxed">
+                  {message.content}
+                </p>
+              ) : (
+                <MarkdownRenderer content={message.content} />
+              )}
+            </div>
+            {!isUser && message.rewardTokenId && (
+              <div className="mt-1 text-xs text-emerald-400/90">
+                Minted token {message.rewardTokenId} · ${message.rewardTokenValueUsd} ·{' '}
+                {message.rewardTokenRarity}
+              </div>
             )}
-          </div>
+          </>
         )}
       </div>
     </div>

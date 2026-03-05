@@ -4,6 +4,7 @@ import type {
   Conversation,
   ConversationSettings,
   Message,
+  RewardToken,
   ReasoningStep,
 } from '../types';
 import { sendMessage } from '../services/aiService';
@@ -34,12 +35,32 @@ function createConversation(settings?: Partial<ConversationSettings>): Conversat
   };
 }
 
+function mintRewardToken(content: string, conversationId: string, messageId: string): RewardToken {
+  const lower = content.toLowerCase();
+  const hasWebIntent =
+    lower.includes('webpage') ||
+    lower.includes('website') ||
+    lower.includes('<html') ||
+    lower.includes('landing page');
+  const rarity: RewardToken['rarity'] = hasWebIntent ? 'rare' : 'common';
+  return {
+    id: `inf-${generateId()}`,
+    conversationId,
+    messageId,
+    createdAt: new Date(),
+    valueUsd: rarity === 'rare' ? 5 : 1,
+    rarity,
+    attachedAsset: hasWebIntent ? 'webpage' : 'conversation',
+  };
+}
+
 export function useConversations(apiConfig: ApiConfig | null) {
   const [conversations, setConversations] = useState<Conversation[]>([
     createConversation(),
   ]);
   const [activeId, setActiveId] = useState<string>(conversations[0].id);
   const [isLoading, setIsLoading] = useState(false);
+  const [rewardTokens, setRewardTokens] = useState<RewardToken[]>([]);
   const abortRef = useRef<AbortController | null>(null);
 
   const activeConversation = conversations.find((c) => c.id === activeId)!;
@@ -164,20 +185,39 @@ export function useConversations(apiConfig: ApiConfig | null) {
               }));
             },
             onComplete: (finalMsg) => {
-              updateConversation(activeId, (c) => ({
-                ...c,
-                messages: c.messages.map((m) =>
+              const minted = mintRewardToken(finalMsg.content, activeId, thinkingMsgId);
+              setRewardTokens((prev) => [...prev, minted]);
+              updateConversation(activeId, (c) => {
+                const messages = c.messages.map((m) =>
                   m.id === thinkingMsgId
                     ? {
                         ...finalMsg,
                         id: thinkingMsgId,
                         isThinking: false,
                         model: modelConfig?.id,
+                        rewardTokenId: minted.id,
+                        rewardTokenValueUsd: minted.valueUsd,
+                        rewardTokenRarity: minted.rarity,
                       }
                     : m
-                ),
-                updatedAt: new Date(),
-              }));
+                );
+
+                if (!messages.some((m) => m.webpageOffer)) {
+                  messages.push(
+                    createMessage(
+                      'assistant',
+                      'Want me to build this conversation into a full working webpage in this same terminal style?',
+                      { model: modelConfig?.id, webpageOffer: true }
+                    )
+                  );
+                }
+
+                return {
+                  ...c,
+                  messages,
+                  updatedAt: new Date(),
+                };
+              });
             },
             onError: (err) => {
               // Ignore abort errors — the user intentionally stopped generation
@@ -238,5 +278,8 @@ export function useConversations(apiConfig: ApiConfig | null) {
     sendUserMessage,
     stopGeneration,
     clearMessages,
+    rewardTokens,
+    rewardTokenBalanceUsd: rewardTokens.reduce((sum, token) => sum + token.valueUsd, 0),
+    rareTokenCount: rewardTokens.filter((token) => token.rarity === 'rare').length,
   };
 }

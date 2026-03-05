@@ -27,7 +27,7 @@ export function Sidebar({
           </div>
           <div>
             <div className="text-sm font-bold text-white">Infinity AI</div>
-            <div className="text-xs text-slate-500">Reasoning Engine</div>
+            <div className="text-xs text-slate-500">Agentic Token Studio</div>
           </div>
         </div>
       </div>
@@ -94,7 +94,7 @@ export function Sidebar({
 
       {/* Footer */}
       <div className="p-3 border-t border-slate-800 text-xs text-slate-600 text-center">
-        Powered by Claude 3.5 & o1
+        Base token floor: $1 · Rare tokens can trade higher
       </div>
     </aside>
   );
