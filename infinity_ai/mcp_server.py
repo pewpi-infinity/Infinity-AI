@@ -48,8 +48,10 @@ class MemoryMCPServer:
             try:
                 request = json.loads(payload)
                 response = self.handle_request(request)
-            except Exception as exc:  # noqa: BLE001
+            except (json.JSONDecodeError, KeyError, ValueError, TypeError) as exc:
                 response = {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
+            except Exception as exc:
+                response = {"ok": False, "error": f"Unhandled {type(exc).__name__}: {exc}"}
             print(json.dumps(response), flush=True)
 
 

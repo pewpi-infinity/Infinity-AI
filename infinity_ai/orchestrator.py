@@ -10,7 +10,8 @@ from typing import Any
 
 from .memory_layer import SharedMemoryLayer
 
-SAFE_PACKAGE_PATTERN = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9._-]*$")
+SAFE_PACKAGE_PATTERN = re.compile(r"^[a-zA-Z0-9]([a-zA-Z0-9._-]*[a-zA-Z0-9])?$")
+MAX_INSTALL_LOG_CHARS = 500
 
 
 class OrchestratorAgent:
@@ -41,10 +42,6 @@ class OrchestratorAgent:
         if chunks:
             return chunks
         return [goal.strip()] if goal.strip() else []
-
-    def set_subgoals(self, goal: str) -> list[str]:
-        """Backward-compatible alias for derive_subgoals."""
-        return self.derive_subgoals(goal)
 
     def discover_python_packages(self, task_description: str, limit: int = 5) -> list[str]:
         task_lower = task_description.lower()
@@ -85,7 +82,10 @@ class OrchestratorAgent:
         self.memory_layer.store_memory(
             key=f"install::{package}",
             content=f"pip install exited with {result.returncode}",
-            metadata={"stdout": result.stdout[-500:], "stderr": result.stderr[-500:]},
+            metadata={
+                "stdout": result.stdout[-MAX_INSTALL_LOG_CHARS:],
+                "stderr": result.stderr[-MAX_INSTALL_LOG_CHARS:],
+            },
         )
         return result
 
