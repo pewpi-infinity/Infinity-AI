@@ -23,6 +23,7 @@ const DEFAULT_SETTINGS: ConversationSettings = {
   showReasoning: true,
   streamResponse: true,
 };
+const MIN_USER_MESSAGES_FOR_WEBPAGE_OFFER = 2;
 
 function createConversation(settings?: Partial<ConversationSettings>): Conversation {
   return {
@@ -41,8 +42,9 @@ function mintRewardToken(content: string, conversationId: string, messageId: str
   const hasHtmlSignal = /<html|<body|<section|<main|```html/.test(lower);
   const hasBuildIntent =
     /(build|create|generate|convert|turn)\s+.{0,40}(webpage|website|landing page)/.test(lower);
+  // Heuristic only: catches common direct negation patterns in the same sentence.
   const hasNegativeIntent =
-    /\b(not|don't|do not|avoid)\b[^.!?\n]{0,20}\b(webpage|website|landing page)\b/.test(lower);
+    /\b(not|don't|do not|avoid)\b[^.!?\n]*\b(webpage|website|landing page)\b/.test(lower);
   const hasWebIntent = (hasHtmlSignal || hasBuildIntent) && !hasNegativeIntent;
   const rarity: RewardToken['rarity'] = hasWebIntent ? 'rare' : 'common';
   return {
@@ -205,7 +207,10 @@ export function useConversations(apiConfig: ApiConfig | null) {
                 );
 
                 const userMessageCount = messages.filter((m) => m.role === 'user').length;
-                if (!c.hasWebpageOfferPrompt && userMessageCount >= 2) {
+                const shouldAddWebpageOffer =
+                  !c.hasWebpageOfferPrompt &&
+                  userMessageCount >= MIN_USER_MESSAGES_FOR_WEBPAGE_OFFER;
+                if (shouldAddWebpageOffer) {
                   messages.push(
                     createMessage(
                       'assistant',
@@ -217,7 +222,7 @@ export function useConversations(apiConfig: ApiConfig | null) {
 
                 return {
                   ...c,
-                  hasWebpageOfferPrompt: c.hasWebpageOfferPrompt || userMessageCount >= 2,
+                  hasWebpageOfferPrompt: c.hasWebpageOfferPrompt || shouldAddWebpageOffer,
                   messages,
                   updatedAt: new Date(),
                 };

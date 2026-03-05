@@ -104,9 +104,16 @@ export function MessageBubble({ message, showReasoning }: MessageBubbleProps) {
               )}
             </div>
             {!isUser && message.rewardTokenId && (
-              <div className="mt-1 text-xs text-emerald-400/90">
-                Minted token {message.rewardTokenId} · ${message.rewardTokenValueUsd} ·{' '}
-                {message.rewardTokenRarity}
+              <div
+                className="mt-1 text-xs text-emerald-400/90"
+                role="status"
+                aria-label={`Minted token ${message.rewardTokenId}, value ${message.rewardTokenValueUsd} dollars, rarity ${message.rewardTokenRarity}`}
+              >
+                <span>Minted token {message.rewardTokenId}</span>
+                <span className="mx-1">·</span>
+                <span>${message.rewardTokenValueUsd}</span>
+                <span className="mx-1">·</span>
+                <span>{message.rewardTokenRarity}</span>
               </div>
             )}
           </>
