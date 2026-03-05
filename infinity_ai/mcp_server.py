@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import sys
+from dataclasses import asdict
 from typing import Any
 
 from .memory_layer import SharedMemoryLayer
@@ -23,7 +24,7 @@ class MemoryMCPServer:
                 content=params["content"],
                 metadata=params.get("metadata"),
             )
-            return {"ok": True, "result": record.__dict__}
+            return {"ok": True, "result": asdict(record)}
 
         if method == "retrieve_context":
             return {
@@ -48,10 +49,9 @@ class MemoryMCPServer:
                 request = json.loads(payload)
                 response = self.handle_request(request)
             except Exception as exc:  # noqa: BLE001
-                response = {"ok": False, "error": str(exc)}
+                response = {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
             print(json.dumps(response), flush=True)
 
 
 if __name__ == "__main__":
     MemoryMCPServer().serve_stdio()
-

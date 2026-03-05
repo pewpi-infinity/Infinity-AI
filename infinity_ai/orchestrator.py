@@ -36,11 +36,15 @@ class OrchestratorAgent:
                 repos.append(child.name)
         return sorted(repos)
 
-    def set_subgoals(self, goal: str) -> list[str]:
+    def derive_subgoals(self, goal: str) -> list[str]:
         chunks = [part.strip() for part in re.split(r"[,\n]| and ", goal) if part.strip()]
         if chunks:
             return chunks
         return [goal.strip()] if goal.strip() else []
+
+    def set_subgoals(self, goal: str) -> list[str]:
+        """Backward-compatible alias for derive_subgoals."""
+        return self.derive_subgoals(goal)
 
     def discover_python_packages(self, task_description: str, limit: int = 5) -> list[str]:
         task_lower = task_description.lower()
@@ -87,7 +91,7 @@ class OrchestratorAgent:
 
     def orchestrate(self, goal: str) -> dict[str, Any]:
         repos = self.scan_repositories()
-        subgoals = self.set_subgoals(goal)
+        subgoals = self.derive_subgoals(goal)
 
         plan: list[dict[str, Any]] = []
         for subgoal in subgoals:
@@ -102,4 +106,3 @@ class OrchestratorAgent:
             )
 
         return {"repos": repos, "subgoals": subgoals, "plan": plan}
-
