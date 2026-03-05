@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Infinity AI — First Page Blueprint</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b1020;
+        --panel: #131a2e;
+        --panel-border: #2a355f;
+        --text: #eaf0ff;
+        --muted: #b8c3e3;
+        --accent: #8ec5ff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        background: radial-gradient(circle at top, #152048 0%, var(--bg) 50%);
+        color: var(--text);
+      }
+
+      .container {
+        width: min(1100px, 92vw);
+        margin: 0 auto;
+        padding: 2rem 0 3rem;
+      }
+
+      h1 {
+        font-size: clamp(1.7rem, 3vw, 2.5rem);
+        margin: 0;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        max-width: 850px;
+        line-height: 1.5;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .card {
+        border: 1px solid var(--panel-border);
+        background: linear-gradient(180deg, #172140 0%, var(--panel) 100%);
+        border-radius: 12px;
+        padding: 1rem;
+      }
+
+      .card h2 {
+        font-size: 1rem;
+        margin: 0 0 0.55rem;
+      }
+
+      .card p {
+        margin: 0 0 0.55rem;
+        color: var(--muted);
+        line-height: 1.35;
+        font-size: 0.95rem;
+      }
+
+      .pill {
+        display: inline-block;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #041634;
+        background: var(--accent);
+        border-radius: 999px;
+        padding: 0.2rem 0.5rem;
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      footer {
+        margin-top: 2rem;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <h1>Infinity AI — Build These 10 Features from Scratch</h1>
+      <p class="subtitle">
+        This first page turns your idea list into an actionable build blueprint. Each card includes
+        the model category and a concrete feature to ship. Start with one card, then keep layering.
+      </p>
+
+      <section class="grid" aria-label="AI features blueprint cards">
+        <article class="card">
+          <span class="pill">2. Creative Writer (GPT-4o)</span>
+          <h2>Dynamic content generation</h2>
+          <p>Generate personalized welcome messages, product descriptions, and summaries from user behavior.</p>
+          <p><a href="https://learn.microsoft.com/azure/ai-foundry/">Azure AI reference</a></p>
+        </article>
+
+        <article class="card">
+          <span class="pill">3. Visual Designer (Diffusion)</span>
+          <h2>Dynamic asset generation</h2>
+          <p>Create custom hero images, icons, or avatars on demand based on profile or mood.</p>
+          <p><a href="https://learn.microsoft.com/azure/ai-services/openai/dall-e-quickstart">DALL-E quickstart</a></p>
+        </article>
+
+        <article class="card">
+          <span class="pill">4. Customer Assistant (Conversational AI)</span>
+          <h2>24/7 support bot</h2>
+          <p>Detect intent and sentiment, then answer like a human support rep rather than an if/then bot.</p>
+          <p><a href="https://cloud.google.com/dialogflow/docs">Dialogflow docs</a></p>
+        </article>
+
+        <article class="card">
+          <span class="pill">5. Task Executor (Agentic AI)</span>
+          <h2>Automation workflows</h2>
+          <p>Let users say “book a meeting and email notes” and have the agent complete both API actions.</p>
+          <p><a href="https://platform.openai.com/docs/guides/function-calling">Function-calling guide</a></p>
+        </article>
+
+        <article class="card">
+          <span class="pill">6. Personalizer (Recommendation Engine)</span>
+          <h2>Netflix-style recommendations</h2>
+          <p>Cluster users by behavior and recommend products/content likely to convert for each segment.</p>
+          <p><a href="https://www.ibm.com/topics/recommendation-engine">Recommendation basics</a></p>
+        </article>
+
+        <article class="card">
+          <span class="pill">7. Image Seer (Computer Vision/CNN)</span>
+          <h2>Visual search + identity checks</h2>
+          <p>Upload images to find similar products or verify identity for passwordless login journeys.</p>
+          <p><a href="https://learn.microsoft.com/azure/ai-services/computer-vision/">Computer Vision docs</a></p>
+        </article>
+
+        <article class="card">
+          <span class="pill">8. Fast Responder (Small Language Model)</span>
+          <h2>Low-latency smart UX</h2>
+          <p>Use lightweight models for instant autocomplete, grammar checks, and other sub-second tasks.</p>
+          <p><a href="https://learn.microsoft.com/azure/ai-studio/how-to/deploy-models-serverless">SLM deployment guide</a></p>
+        </article>
+
+        <article class="card">
+          <span class="pill">9. Data Predictor (Regression)</span>
+          <h2>Forecasting dashboard</h2>
+          <p>Predict prices, demand, or trends from historical records for finance, operations, and sales.</p>
+          <p><a href="https://www.databricks.com/glossary/linear-regression">Linear regression reference</a></p>
+        </article>
+
+        <article class="card">
+          <span class="pill">10. Global Translator (Multilingual AI)</span>
+          <h2>Real-time localization</h2>
+          <p>Translate full experiences including tone and idioms, not just static UI strings.</p>
+          <p><a href="https://prolim.com/artificial-intelligence/">Multilingual AI overview</a></p>
+        </article>
+
+        <article class="card">
+          <span class="pill">11. Audio Interface (Whisper/TTS)</span>
+          <h2>Hands-free voice control</h2>
+          <p>Let users navigate, fill forms, and listen to content through speech recognition + TTS output.</p>
+          <p><a href="https://zapier.com/blog/ai-voice-generator/">Voice UX examples</a></p>
+        </article>
+      </section>
+
+      <footer>
+        Suggested next integration for your “mongoose os repo brains” direction: combine card #5 (Agentic AI)
+        with #6 (Personalizer) and persist workflow memory in MongoDB/Mongoose for adaptive behavior.
+      </footer>
+    </main>
+  </body>
+</html>
