@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-600 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-500;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .prose-custom p {
+    @apply mb-3 last:mb-0;
+  }
+  .prose-custom pre {
+    @apply my-2;
+  }
+  .prose-custom code {
+    @apply text-sm;
+  }
+  .prose-custom ul {
+    @apply list-disc ml-4 mb-3;
+  }
+  .prose-custom ol {
+    @apply list-decimal ml-4 mb-3;
+  }
+  .prose-custom li {
+    @apply mb-1;
+  }
+  .prose-custom h1, .prose-custom h2, .prose-custom h3 {
+    @apply font-bold mb-2 mt-4;
+  }
+  .prose-custom h1 { @apply text-xl; }
+  .prose-custom h2 { @apply text-lg; }
+  .prose-custom h3 { @apply text-base; }
+  .prose-custom blockquote {
+    @apply border-l-4 border-slate-500 pl-4 italic my-2 text-slate-400;
+  }
+  .prose-custom table {
+    @apply w-full border-collapse my-3 text-sm;
+  }
+  .prose-custom th {
+    @apply border border-slate-600 bg-slate-700 px-3 py-2 text-left font-semibold;
+  }
+  .prose-custom td {
+    @apply border border-slate-600 px-3 py-2;
+  }
+  .prose-custom a {
+    @apply text-blue-400 hover:underline;
+  }
+  .prose-custom strong {
+    @apply font-semibold text-white;
+  }
+}
