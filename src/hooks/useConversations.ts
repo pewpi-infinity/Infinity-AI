@@ -4,6 +4,7 @@ import type {
   Conversation,
   ConversationSettings,
   Message,
+  RewardToken,
   ReasoningStep,
 } from '../types';
 import { sendMessage } from '../services/aiService';
@@ -22,6 +23,7 @@ const DEFAULT_SETTINGS: ConversationSettings = {
   showReasoning: true,
   streamResponse: true,
 };
+const MIN_USER_MESSAGES_FOR_WEBPAGE_OFFER = 2;
 
 function createConversation(settings?: Partial<ConversationSettings>): Conversation {
   return {
@@ -29,8 +31,30 @@ function createConversation(settings?: Partial<ConversationSettings>): Conversat
     title: 'New Conversation',
     messages: [],
     settings: { ...DEFAULT_SETTINGS, ...settings },
+    hasWebpageOfferPrompt: false,
     createdAt: new Date(),
     updatedAt: new Date(),
+  };
+}
+
+function mintRewardToken(content: string, conversationId: string, messageId: string): RewardToken {
+  const lower = content.toLowerCase();
+  const hasHtmlSignal = /<html|<body|<section|<main|```html/.test(lower);
+  const hasBuildIntent =
+    /(build|create|generate|convert|turn)\s+.{0,40}(webpage|website|landing page)/.test(lower);
+  // Heuristic only: catches common direct negation patterns in the same sentence.
+  const hasNegativeIntent =
+    /\b(not|don't|do not|avoid)\b[^.!?\n]*\b(webpage|website|landing page)\b/.test(lower);
+  const hasWebIntent = (hasHtmlSignal || hasBuildIntent) && !hasNegativeIntent;
+  const rarity: RewardToken['rarity'] = hasWebIntent ? 'rare' : 'common';
+  return {
+    id: `inf-${generateId()}`,
+    conversationId,
+    messageId,
+    createdAt: new Date(),
+    valueUsd: rarity === 'rare' ? 5 : 1,
+    rarity,
+    attachedAsset: hasWebIntent ? 'webpage' : 'conversation',
   };
 }
 
@@ -40,6 +64,7 @@ export function useConversations(apiConfig: ApiConfig | null) {
   ]);
   const [activeId, setActiveId] = useState<string>(conversations[0].id);
   const [isLoading, setIsLoading] = useState(false);
+  const [rewardTokens, setRewardTokens] = useState<RewardToken[]>([]);
   const abortRef = useRef<AbortController | null>(null);
 
   const activeConversation = conversations.find((c) => c.id === activeId)!;
@@ -164,20 +189,44 @@ export function useConversations(apiConfig: ApiConfig | null) {
               }));
             },
             onComplete: (finalMsg) => {
-              updateConversation(activeId, (c) => ({
-                ...c,
-                messages: c.messages.map((m) =>
+              const minted = mintRewardToken(finalMsg.content, activeId, thinkingMsgId);
+              setRewardTokens((prev) => [...prev, minted]);
+              updateConversation(activeId, (c) => {
+                const messages = c.messages.map((m) =>
                   m.id === thinkingMsgId
                     ? {
                         ...finalMsg,
                         id: thinkingMsgId,
                         isThinking: false,
                         model: modelConfig?.id,
+                        rewardTokenId: minted.id,
+                        rewardTokenValueUsd: minted.valueUsd,
+                        rewardTokenRarity: minted.rarity,
                       }
                     : m
-                ),
-                updatedAt: new Date(),
-              }));
+                );
+
+                const userMessageCount = messages.filter((m) => m.role === 'user').length;
+                const shouldAddWebpageOffer =
+                  !c.hasWebpageOfferPrompt &&
+                  userMessageCount >= MIN_USER_MESSAGES_FOR_WEBPAGE_OFFER;
+                if (shouldAddWebpageOffer) {
+                  messages.push(
+                    createMessage(
+                      'assistant',
+                      'Want me to build this conversation into a full working webpage in this same terminal style?',
+                      { model: modelConfig?.id, webpageOffer: true }
+                    )
+                  );
+                }
+
+                return {
+                  ...c,
+                  hasWebpageOfferPrompt: c.hasWebpageOfferPrompt || shouldAddWebpageOffer,
+                  messages,
+                  updatedAt: new Date(),
+                };
+              });
             },
             onError: (err) => {
               // Ignore abort errors — the user intentionally stopped generation
@@ -221,6 +270,7 @@ export function useConversations(apiConfig: ApiConfig | null) {
   const clearMessages = useCallback(() => {
     updateConversation(activeId, (c) => ({
       ...c,
+      hasWebpageOfferPrompt: false,
       messages: [],
       title: 'New Conversation',
       updatedAt: new Date(),
@@ -238,5 +288,8 @@ export function useConversations(apiConfig: ApiConfig | null) {
     sendUserMessage,
     stopGeneration,
     clearMessages,
+    rewardTokens,
+    rewardTokenBalanceUsd: rewardTokens.reduce((sum, token) => sum + token.valueUsd, 0),
+    rareTokenCount: rewardTokens.filter((token) => token.rarity === 'rare').length,
   };
 }

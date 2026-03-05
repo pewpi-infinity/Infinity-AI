@@ -35,6 +35,20 @@ export interface Message {
   model?: ModelId;
   error?: boolean;
   tokensUsed?: number;
+  rewardTokenId?: string;
+  rewardTokenValueUsd?: number;
+  rewardTokenRarity?: 'common' | 'rare';
+  webpageOffer?: boolean;
+}
+
+export interface RewardToken {
+  id: string;
+  conversationId: string;
+  messageId: string;
+  createdAt: Date;
+  valueUsd: number;
+  rarity: 'common' | 'rare';
+  attachedAsset: 'conversation' | 'webpage';
 }
 
 export interface ApiConfig {
@@ -59,6 +73,7 @@ export interface Conversation {
   title: string;
   messages: Message[];
   settings: ConversationSettings;
+  hasWebpageOfferPrompt: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
