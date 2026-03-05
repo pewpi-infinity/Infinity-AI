@@ -8,6 +8,13 @@ import { ApiConfigPanel } from './components/ApiConfigPanel';
 import { useConversations } from './hooks/useConversations';
 import { useApiConfig } from './hooks/useApiConfig';
 
+const currencyFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 2,
+});
+
 export default function App() {
   const { apiConfig, saveConfig, clearConfig } = useApiConfig();
   const {
@@ -73,7 +80,9 @@ export default function App() {
               <Wallet className="w-3.5 h-3.5 text-emerald-400" />
               <span className="text-emerald-300 font-medium">{rewardTokens.length} tokens</span>
               <span className="text-emerald-500/80">·</span>
-              <span className="text-emerald-200">${rewardTokenBalanceUsd.toFixed(0)} base</span>
+              <span className="text-emerald-200">
+                {currencyFormatter.format(rewardTokenBalanceUsd)} base
+              </span>
               {rareTokenCount > 0 && (
                 <>
                   <span className="text-emerald-500/80">·</span>

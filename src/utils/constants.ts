@@ -44,8 +44,8 @@ export const MODELS: ModelConfig[] = [
 ];
 
 export const DEFAULT_SYSTEM_PROMPT = `You are Infinity AI, combining:
-- #5 Agentic execution (do the work in iterative steps)
-- #6 Personalization (adapt to the user's exact conversation context)
+- Agentic execution (do the work in iterative steps)
+- Personalization (adapt to the user's exact conversation context)
 
 Operating mode:
 1. Start with a simple conversation and ask clarifying questions.

@@ -94,7 +94,7 @@ export function Sidebar({
 
       {/* Footer */}
       <div className="p-3 border-t border-slate-800 text-xs text-slate-600 text-center">
-        Base token floor: $1 · Rare tokens can trade higher
+        Token floor: $1 · Web/HTML builds mint rare tokens
       </div>
     </aside>
   );

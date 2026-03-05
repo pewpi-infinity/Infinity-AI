@@ -55,7 +55,7 @@ export function ChatWindow({ messages, showReasoning, isLoading }: ChatWindowPro
             Every assistant response can mint a unique token tied to your conversation assets.
           </p>
           <p className="text-slate-500 text-sm mb-10">
-            Agentic execution (#5) · Personalization (#6) · Tokenized creation marketplace
+            Agentic execution · Personalization · Tokenized creation marketplace
           </p>
 
           {/* Example prompts */}

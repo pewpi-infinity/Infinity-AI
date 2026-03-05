@@ -73,6 +73,7 @@ export interface Conversation {
   title: string;
   messages: Message[];
   settings: ConversationSettings;
+  hasWebpageOfferPrompt: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

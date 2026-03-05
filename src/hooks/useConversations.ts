@@ -30,6 +30,7 @@ function createConversation(settings?: Partial<ConversationSettings>): Conversat
     title: 'New Conversation',
     messages: [],
     settings: { ...DEFAULT_SETTINGS, ...settings },
+    hasWebpageOfferPrompt: false,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -37,11 +38,12 @@ function createConversation(settings?: Partial<ConversationSettings>): Conversat
 
 function mintRewardToken(content: string, conversationId: string, messageId: string): RewardToken {
   const lower = content.toLowerCase();
-  const hasWebIntent =
-    lower.includes('webpage') ||
-    lower.includes('website') ||
-    lower.includes('<html') ||
-    lower.includes('landing page');
+  const hasHtmlSignal = /<html|<body|<section|<main|```html/.test(lower);
+  const hasBuildIntent =
+    /(build|create|generate|convert|turn)\s+.{0,40}(webpage|website|landing page)/.test(lower);
+  const hasNegativeIntent =
+    /\b(not|don't|do not|avoid)\b[^.!?\n]{0,20}\b(webpage|website|landing page)\b/.test(lower);
+  const hasWebIntent = (hasHtmlSignal || hasBuildIntent) && !hasNegativeIntent;
   const rarity: RewardToken['rarity'] = hasWebIntent ? 'rare' : 'common';
   return {
     id: `inf-${generateId()}`,
@@ -202,7 +204,8 @@ export function useConversations(apiConfig: ApiConfig | null) {
                     : m
                 );
 
-                if (!messages.some((m) => m.webpageOffer)) {
+                const userMessageCount = messages.filter((m) => m.role === 'user').length;
+                if (!c.hasWebpageOfferPrompt && userMessageCount >= 2) {
                   messages.push(
                     createMessage(
                       'assistant',
@@ -214,6 +217,7 @@ export function useConversations(apiConfig: ApiConfig | null) {
 
                 return {
                   ...c,
+                  hasWebpageOfferPrompt: c.hasWebpageOfferPrompt || userMessageCount >= 2,
                   messages,
                   updatedAt: new Date(),
                 };
@@ -261,6 +265,7 @@ export function useConversations(apiConfig: ApiConfig | null) {
   const clearMessages = useCallback(() => {
     updateConversation(activeId, (c) => ({
       ...c,
+      hasWebpageOfferPrompt: false,
       messages: [],
       title: 'New Conversation',
       updatedAt: new Date(),
